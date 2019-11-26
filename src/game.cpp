@@ -21,6 +21,7 @@ void Game::load()
     _full_text.setCharacterSize(50);
 
 	_player = Player(&_textures[0]);
+	_player.setSpeed(5);
 }
 
 void Game::loadTextures()
@@ -45,31 +46,77 @@ void Game::loadTextures()
 //    _window.draw(_full_text);
 //}
 
-void Game::update()
+void::Game::updatePlayer()
 {
-	//wideText("MARYLOUUUUUUUUUU...", sf::Color::Cyan);
+	if (isLeftArrowPress)
+	{
+		_player.move(-1,0);
+	}
+	if (isRightArrowPress)
+	{
+		_player.move(1,0);
+	}
 	_player.draw(_window);
-	for (int i = 0; i < _bullets.size(); ++i) 
+}
+
+void::Game::updateBullets()
+{
+	for (int i = 0; i < _bullets.size(); ++i)
 	{
 		_bullets[i].draw(_window);
 		_bullets[i].move(-8);
-		std::cout << _bullets[i].getSprite().getPosition().y;
+
+		if (_bullets[i].getSprite().getPosition().y > WINDOW_WIDTH || _bullets[i].getSprite().getPosition().y < 0)
+		{
+			_bullets.erase(_bullets.begin() + i);
+		}
 	};
 }
 
-void Game::HandleEvent(sf::Event event)
+void Game::update()
 {
-	if (event.key.code == 71) 
-	{
-		_player.move(-20,0);
+	//wideText(timeSinceLastUpdate.asSeconds, sf::Color::Cyan);
+	this->updatePlayer();
+	this->updateBullets();
+
+
+}
+
+void Game::HandleEvent(sf::Event event, bool isActive)
+{
+	if (isActive) {
+		if (event.key.code == 71)
+		{
+			isLeftArrowPress = true;
+		}
+		if (event.key.code == 57)
+		{
+			if (!isSpaceBarPressed)
+			{
+				_bullets.push_back(Bullet(&_textures[1]));
+				_player.shoot(_bullets.back());
+				isSpaceBarPressed = true;
+			}
+		}
+		if (event.key.code == 72) {
+			isRightArrowPress = true;
+		}
 	}
-	if (event.key.code == 57)
-	{
-		_bullets.push_back(Bullet(&_textures[1]));
-		_player.shoot(_bullets.back());
-	}
-	if (event.key.code == 72) {
-		_player.move(20,0);
+	else {
+		if (event.key.code == 57)
+		{
+			isSpaceBarPressed = false;
+		}
+
+		if (event.key.code == 71)
+		{
+			isLeftArrowPress = false;
+		}
+
+		if (event.key.code == 72)
+		{
+			isRightArrowPress = false;
+		}
 	}
 
 }
@@ -78,6 +125,7 @@ void Game::loop()
 {
     while (this->_window.isOpen())
     {
+		timeSinceLastUpdate += clock.restart();
         this->_window.clear(sf::Color::Black);
         sf::Event event;
         while (this->_window.pollEvent(event))
@@ -85,8 +133,12 @@ void Game::loop()
             switch (event.type)
             {
             case sf::Event::KeyPressed:
-				this->HandleEvent(event);
+				this->HandleEvent(event, true);
                 break;
+
+			case sf::Event::KeyReleased:
+				this->HandleEvent(event, false);
+			break;
             case sf::Event::Closed:
                 this->_window.close();
                 break;

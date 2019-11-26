@@ -12,6 +12,11 @@ void Movable::shoot(Bullet &bullet) {
     bullet.setPosition(_spriteBody.getPosition());
 }
 
+void Movable::setSpeed(float speed)
+{
+    _speed = speed;
+
+}
 Movable::~Movable() {
 
 }

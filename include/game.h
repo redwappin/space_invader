@@ -10,9 +10,19 @@ class Game
 {
 private:
     void update();
+	void updatePlayer();
+	void updateBullets();
     void load();
     void wideText(const std::string &text, const sf::Color &color);
 	void loadTextures();
+
+	sf::Clock clock;
+
+	sf::Time timeSinceLastUpdate = sf::Time::Zero;
+
+	bool isSpaceBarPressed = false;
+	bool isLeftArrowPress = false;
+	bool isRightArrowPress = false;
 
 	std::vector<sf::Texture> _textures;
 
@@ -23,7 +33,7 @@ private:
 
 	std::vector<Bullet> _bullets;
 
-	void HandleEvent(sf::Event event);
+	void HandleEvent(sf::Event event, bool isActive);
 
     sf::RenderWindow _window;
     sf::Font _font;

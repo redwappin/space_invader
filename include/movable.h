@@ -19,6 +19,7 @@ public:
     ~Movable();
     void move (float x, float y);
     void shoot(Bullet& bullet);
+    void setSpeed(float speed);
 };
 
 

@@ -9,6 +9,8 @@ class Player : public Movable
 {
 protected:
 	virtual void loadEntity();
+	float _speed;
+
 
 
 public:

@@ -10,12 +10,13 @@ Bullet::Bullet(sf::Texture* texture)
 
 Bullet::~Bullet()
 {
+	//delete(this);
 }
 
 
 void Bullet::draw(sf::RenderWindow& _window)
 {
-	_spriteBody.setScale(0.1f, 0.1f);
+	_spriteBody.setScale(0.2f, 0.2f);
 	_window.draw(_spriteBody);
 }
 

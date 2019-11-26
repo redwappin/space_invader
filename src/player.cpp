@@ -15,14 +15,13 @@ void Player::loadEntity()
 {
 	_spriteBody.setTexture(*_bodyTexture);
 	setOrigin(0, 0);
-	setPosition(500 / 2.0f, 900 / 2.0f);
+	setPosition(500 / 2.0f, 800);
 }
 
 Player::~Player()
 {
 
 }
-
 
 
 
