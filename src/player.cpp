@@ -21,25 +21,32 @@ Player::~Player()
 
 void Player::draw(sf::RenderWindow& _window)
 {
-	_spriteBody.setScale(0.05f, 0.05f);
+	_spriteBody.setScale(0.1f, 0.1f);
 	_window.draw(_spriteBody);
 }
 
 void Player::loadEntity()
 {
 	_spriteBody.setTexture(*_bodyTexture);
+	_spriteBody.setPosition(1200/2.0f, 800);
 	_spriteBody.setOrigin(0, 0);
-	_spriteBody.setPosition(500 / 2.0f, 900 / 2.0f);
 }
 
-void Player::move(float x)
+void Player::move(int direction)
 {
-	_spriteBody.move(x * _speed, 0);
+	_spriteBody.move(sf::Vector2f(direction * _speed, 0));
 }
 
 void Player::shoot(Bullet& bullet)
 {
 	bullet.setPosition(_spriteBody.getPosition());
+
+}
+
+
+void Player::setSpeed(float speed)
+{
+	_speed = speed;
 
 }
 

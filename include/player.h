@@ -4,7 +4,7 @@
 /*
 ** Player handling
 */
-class Player : public Entity
+class Player : public Entity 
 {
 protected:
 	virtual void loadEntity();
@@ -17,6 +17,7 @@ public:
 	Player(sf::Texture* texture);
 	~Player();
 	virtual void draw(sf::RenderWindow& _window);
-	virtual void move(float x);
+	virtual void move(int direction);
 	void shoot(Bullet& bullet);
+	void setSpeed(float v);
 };
