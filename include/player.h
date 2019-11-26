@@ -1,6 +1,6 @@
 #pragma once
 #include "entity.h"
-
+#include "bullet.h"
 /*
 ** Player handling
 */
@@ -10,10 +10,13 @@ protected:
 	virtual void loadEntity();
 	float _speed;
 
+
+
 public:
 	Player();
+	Player(sf::Texture* texture);
 	~Player();
 	virtual void draw(sf::RenderWindow& _window);
 	virtual void move(float x);
-	virtual void shoot();
+	void shoot(Bullet& bullet);
 };

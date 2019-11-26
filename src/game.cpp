@@ -15,9 +15,23 @@ Game::~Game()
 
 void Game::load()
 {
+	this ->loadTextures();
     _font.loadFromFile("assets/Sansation.ttf");
     _full_text.setFont(_font);
     _full_text.setCharacterSize(50);
+
+	_player = Player(&_textures[0]);
+}
+
+void Game::loadTextures()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		_textures.push_back(sf::Texture());
+	}
+	_textures[0].loadFromFile("assets/luigi.png");
+	_textures[1].loadFromFile("assets/carapace.png");
+
 }
 
 void Game::wideText(const std::string &text, const sf::Color &color)
@@ -35,6 +49,29 @@ void Game::update()
 {
 	///wideText("MARYLOUUUUUUUUUU...", sf::Color::Cyan);
 	_player.draw(_window);
+	for (int i = 0; i < _bullets.size(); ++i) 
+	{
+		_bullets[i].draw(_window);
+		_bullets[i].move(-8);
+		std::cout << _bullets[i].getSprite().getPosition().y;
+	};
+}
+
+void Game::HandleEvent(sf::Event event)
+{
+	if (event.key.code == 71) 
+	{
+		_player.move(-20);
+	}
+	if (event.key.code == 57)
+	{
+		_bullets.push_back(Bullet(&_textures[1]));
+		_player.shoot(_bullets.back());
+	}
+	if (event.key.code == 72) {
+		_player.move(20);
+	}
+
 }
 
 void Game::loop()
@@ -48,15 +85,7 @@ void Game::loop()
             switch (event.type)
             {
             case sf::Event::KeyPressed:
-				if (event.key.code == 71)
-				{
-					_player.move(-8);
-				}
-				if (event.key.code == 72) {
-					_player.move(8);
-				}
-                break;
-            case sf::Event::KeyReleased:
+				this->HandleEvent(event);
                 break;
             case sf::Event::Closed:
                 this->_window.close();
