@@ -1,19 +1,17 @@
 #pragma once
 #include "invaders.h"
-#include "entity.h"
+#include "movable.h"
 
 /*
 ** Enemy handling
 */
-class Enemy : public Entity
+class Enemy : public Movable
 {
 protected:
 	virtual void loadEntity();
-	float _speed;
 
 public:
-	Enemy();
+	Enemy(){};
+	explicit Enemy(sf::Texture* texture);
 	~Enemy();
-	virtual void draw(sf::RenderWindow& _window);
-	virtual void move(float x);
 };

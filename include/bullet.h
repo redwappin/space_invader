@@ -16,5 +16,4 @@ public:
 	virtual void draw(sf::RenderWindow& _window);
 	virtual void setPosition(sf::Vector2f position);
 	virtual void move(float x);
-
 };

@@ -34,20 +34,20 @@ void Game::loadTextures()
 
 }
 
-void Game::wideText(const std::string &text, const sf::Color &color)
-{
-    _full_text.setString(text);
-    sf::FloatRect box = _full_text.getLocalBounds();
-    _full_text.setOrigin(box.left + box.width / 2.0f,
-                         box.top + box.height / 2.0f);
-    _full_text.setPosition(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
-    _full_text.setFillColor(color);
-    _window.draw(_full_text);
-}
+//void Game::wideText(const std::string &text, const sf::Color &color)
+//{
+//    _full_text.setString(text);
+//    sf::FloatRect box = _full_text.getLocalBounds();
+//    _full_text.setOrigin(box.left + box.width / 2.0f,
+//                         box.top + box.height / 2.0f);
+//    _full_text.setPosition(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
+//    _full_text.setFillColor(color);
+//    _window.draw(_full_text);
+//}
 
 void Game::update()
 {
-	///wideText("MARYLOUUUUUUUUUU...", sf::Color::Cyan);
+	//wideText("MARYLOUUUUUUUUUU...", sf::Color::Cyan);
 	_player.draw(_window);
 	for (int i = 0; i < _bullets.size(); ++i) 
 	{
@@ -61,7 +61,7 @@ void Game::HandleEvent(sf::Event event)
 {
 	if (event.key.code == 71) 
 	{
-		_player.move(-20);
+		_player.move(-20,0);
 	}
 	if (event.key.code == 57)
 	{
@@ -69,7 +69,7 @@ void Game::HandleEvent(sf::Event event)
 		_player.shoot(_bullets.back());
 	}
 	if (event.key.code == 72) {
-		_player.move(20);
+		_player.move(20,0);
 	}
 
 }
