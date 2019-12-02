@@ -1,15 +1,14 @@
-//
-// Created by Amryon on 26/11/2019.
-//
-
+#include <iostream>
 #include "movable.h"
+#include "bullet.h"
 
-void Movable::move(float x, float y) {
-    _spriteBody.move(x * _speed, y);
+
+Movable::Movable(sf::Texture* texture) :Entity(texture){
+
 }
 
-void Movable::shoot(Bullet &bullet) {
-    bullet.setPosition(_spriteBody.getPosition());
+void Movable::move(float x, float y) {
+    _spriteBody.move(x * _speed, y*_speed);
 }
 
 void Movable::setSpeed(float speed)
@@ -20,3 +19,4 @@ void Movable::setSpeed(float speed)
 Movable::~Movable() {
 
 }
+

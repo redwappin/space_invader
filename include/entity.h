@@ -16,10 +16,14 @@ protected:
 public:
 	Entity();
 	explicit Entity(sf::Texture* texture);
-	~Entity();
+
     void setPosition (float x, float y);
     void setOrigin (float x, float y);
     void setScale (float x, float y);
-	void draw(sf::RenderWindow& _window);
-	sf::Sprite getSprite();
+    sf::Vector2f getPosition();
+    sf::FloatRect getBounds();
+
+    void draw(sf::RenderWindow& _window);
+
+    virtual ~Entity();
 };

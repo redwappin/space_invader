@@ -2,10 +2,18 @@
 #include <player.h>
 #include <iostream>
 
+Limits Game::windowsSize = Limits();
+Limits Game::enemiesArea = Limits();
+CollisionSystem Game::collisionSystem = CollisionSystem();
+
 Game::Game()
 {
-    _window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Simple invaders", sf::Style::Close | sf::Style::Titlebar);
+    windowsSize.max_height = 900;
+    windowsSize.max_width = 1200;
+    _window.create(sf::VideoMode(windowsSize.max_width, windowsSize.max_height), "Simple invaders", sf::Style::Close | sf::Style::Titlebar);
     _window.setVerticalSyncEnabled(true);
+    _window.setKeyRepeatEnabled(false);
+
     load();
 }
 
@@ -20,43 +28,35 @@ void Game::load()
     _full_text.setFont(_font);
     _full_text.setCharacterSize(50);
 
+    enemiesArea.max_height = 800;
+    enemiesArea.min_height = 300;
+    enemiesArea.max_width = 1100;
+    enemiesArea.min_height = 0;
+
+    //Setup movable
+    enemiesManager = EnemiesManager();
+    enemiesManager.enemyTexture = &_textures[3];
+    enemiesManager.spawn();
+    enemiesManager.draw(_window);
 	_player = Player(&_textures[0]);
 	_player.setSpeed(5);
 }
 
 void Game::loadTextures()
 {
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		_textures.push_back(sf::Texture());
+		_textures.emplace_back(sf::Texture());
 	}
 	_textures[0].loadFromFile("assets/luigi.png");
 	_textures[1].loadFromFile("assets/carapace.png");
-
+    _textures[3].loadFromFile("assets/ghost.png");
 }
-
-//void Game::wideText(const std::string &text, const sf::Color &color)
-//{
-//    _full_text.setString(text);
-//    sf::FloatRect box = _full_text.getLocalBounds();
-//    _full_text.setOrigin(box.left + box.width / 2.0f,
-//                         box.top + box.height / 2.0f);
-//    _full_text.setPosition(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f);
-//    _full_text.setFillColor(color);
-//    _window.draw(_full_text);
-//}
 
 void::Game::updatePlayer()
 {
-	if (isLeftArrowPress)
-	{
-		_player.move(-1,0);
-	}
-	if (isRightArrowPress)
-	{
-		_player.move(1,0);
-	}
-	_player.draw(_window);
+    _player.move(v_playerMove.x,v_playerMove.y);
+    _player.draw(_window);
 }
 
 void::Game::updateBullets()
@@ -64,60 +64,44 @@ void::Game::updateBullets()
 	for (int i = 0; i < _bullets.size(); ++i)
 	{
 		_bullets[i].draw(_window);
-		_bullets[i].move(-8);
+		_bullets[i].move(0,-1);
 
-		if (_bullets[i].getSprite().getPosition().y > WINDOW_WIDTH || _bullets[i].getSprite().getPosition().y < 0)
+		if (_bullets[i].getPosition().y > windowsSize.max_width || _bullets[i].getPosition().y < 0)
 		{
 			_bullets.erase(_bullets.begin() + i);
 		}
 	};
 }
 
+void Game::updateEnemies() {
+
+}
+
 void Game::update()
 {
-	//wideText(timeSinceLastUpdate.asSeconds, sf::Color::Cyan);
+    enemiesManager.draw(_window);
 	this->updatePlayer();
 	this->updateBullets();
-
 
 }
 
 void Game::HandleEvent(sf::Event event, bool isActive)
 {
-	if (isActive) {
-		if (event.key.code == 71)
-		{
-			isLeftArrowPress = true;
-		}
-		if (event.key.code == 57)
-		{
-			if (!isSpaceBarPressed)
-			{
-				_bullets.push_back(Bullet(&_textures[1]));
-				_player.shoot(_bullets.back());
-				isSpaceBarPressed = true;
-			}
-		}
-		if (event.key.code == 72) {
-			isRightArrowPress = true;
-		}
-	}
-	else {
-		if (event.key.code == 57)
-		{
-			isSpaceBarPressed = false;
-		}
+    int keyCode = event.key.code;
+    int x_move = 0;
+    if(isActive){
+        x_move = (keyCode == 71)? -1 : (keyCode == 72)? 1 : 0;
+    }else{
+        x_move = (keyCode == 71)? 1 : (keyCode == 72)? -1 :0;
+        if(keyCode == 57){
+            _bullets.emplace_back(&_textures[1]);
+			_player.shoot(_bullets.back());
+        }
+    }
 
-		if (event.key.code == 71)
-		{
-			isLeftArrowPress = false;
-		}
-
-		if (event.key.code == 72)
-		{
-			isRightArrowPress = false;
-		}
-	}
+    int y_move = 0.0f;
+    sf::Vector2i v_newMove (x_move,y_move);
+    v_playerMove += v_newMove;
 
 }
 
@@ -150,3 +134,7 @@ void Game::loop()
         this->_window.display();
     }
 }
+
+
+
+

@@ -8,10 +8,11 @@
 class Enemy : public Movable
 {
 protected:
-	virtual void loadEntity();
+	void loadEntity() override;
+	void update();
 
 public:
 	Enemy(){};
-	explicit Enemy(sf::Texture* texture);
+	explicit Enemy(sf::Texture* texture, sf::Vector2f startPos);
 	~Enemy();
 };

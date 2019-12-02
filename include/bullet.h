@@ -1,19 +1,16 @@
 #pragma once
-#include "entity.h"
+#include "movable.h"
+
 /*
 ** Player handling
 */
-class Bullet : public Entity
+class Bullet : public Movable
 {
 protected:
-	void loadEntity();
-	float _speed;
+	void loadEntity() override;
 
 public:
 	Bullet();
-	Bullet(sf::Texture* texture);
+	explicit Bullet(sf::Texture* texture);
 	~Bullet();
-	virtual void draw(sf::RenderWindow& _window);
-	virtual void setPosition(sf::Vector2f position);
-	virtual void move(float x);
 };

@@ -11,10 +11,6 @@ void Entity::draw(sf::RenderWindow &_window) {
     _window.draw(_spriteBody);
 }
 
-sf::Sprite Entity::getSprite()
-{
-	return _spriteBody;
-}
 
 void Entity::setOrigin(float x, float y) {
     _spriteBody.setOrigin(x,y);
@@ -28,9 +24,22 @@ void Entity::setScale(float x, float y) {
     _spriteBody.setScale(x,y);
 }
 
+sf::Vector2f Entity::getPosition() {
+    return _spriteBody.getPosition();
+}
+
+sf::FloatRect Entity::getBounds() {
+    return _spriteBody.getGlobalBounds();
+}
+
 Entity::~Entity()
 {
 }
+
+
+
+
+
 
 
 

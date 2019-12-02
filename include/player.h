@@ -8,13 +8,11 @@
 class Player : public Movable
 {
 protected:
-	virtual void loadEntity();
-	float _speed;
-
-
+	void loadEntity() override;
 
 public:
 	Player(){};
 	explicit Player(sf::Texture* texture);
+	void shoot(Bullet& bullet);
 	~Player();
 };
