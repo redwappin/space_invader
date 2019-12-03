@@ -198,6 +198,7 @@ void Game::HandleEvent(sf::Event& event, bool isActive)
         if(event.type == sf::Event::MouseButtonPressed){
             sf::Vector2f Mouse = _window.mapPixelToCoords(sf::Mouse::getPosition(_window));
             if (_menu.getBoxes()[0].getGlobalBounds().contains(Mouse)) {
+                level = 1;
                 _gameState = onGame;
                 this->initGame();
             }else if (_menu.getBoxes()[1].getGlobalBounds().contains(Mouse)) {
