@@ -14,7 +14,6 @@ Player::Player(sf::Texture* texture) : Movable(texture)
 void Player::loadEntity()
 {
 	_spriteBody.setTexture(*_bodyTexture);
-	setPosition(500 / 2.0f, 800);
 }
 
 void Player::shoot(Bullet &bullet) {

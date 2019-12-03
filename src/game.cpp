@@ -1,6 +1,7 @@
 #include "game.h"
 #include <player.h>
 #include <iostream>
+#include <stdio.h>
 
 Limits Game::windowsSize = Limits();
 Limits Game::enemiesArea = Limits();
@@ -37,7 +38,7 @@ void Game::load()
 
     //Setup movable
     enemiesManager = EnemiesManager();
-    enemiesManager.enemyTexture = &_textures[3];
+    enemiesManager.enemyTexture = &_textures[2];
     enemiesManager.spawn();
 }
 
@@ -55,14 +56,28 @@ void Game::initGame()
 {
     _player.setSpeed(5);
     _player.setLife(3);
+    _player.setPosition(_window.getView().getSize().x / 2.0f, _window.getView().getSize().y - _player.getBounds().height);
     for (int i = 0; i < _player.getLives(); ++i)
     {
-        _player_lives.emplace_back(&_textures[4]);
+        _player_lives.emplace_back(&_textures[3]);
         _player_lives.back().setPosition(  (_window.getSize().x -(_window.getSize().x/ 4))+i * 100, 0);
     };
+
     auto levelConf = _levelConfig.findByLevelNumber(level);
     timeSinceLastUpdate = sf::Time::Zero;
-    std::cout << timeSinceLastUpdate.asSeconds();
+
+    drawText("Niveau " + std::to_string(level));
+    this -> _window.display();
+    std::this_thread::sleep_for (std::chrono::seconds(2));
+    this -> _window.clear();
+//    //Setup movable
+//    enemiesManager = EnemiesManager();
+//    enemiesManager.enemyTexture = &_textures[2];
+//    enemiesManager.spawn();
+
+
+
+
 
 
 }
@@ -75,8 +90,8 @@ void Game::loadTextures()
 	}
 	_textures[0].loadFromFile("assets/luigi.png");
 	_textures[1].loadFromFile("assets/carapace.png");
-    _textures[3].loadFromFile("assets/ghost.png");
-    _textures[4].loadFromFile("assets/pixel-heart.png");
+    _textures[2].loadFromFile("assets/ghost.png");
+    _textures[3].loadFromFile("assets/pixel-heart.png");
 }
 
 void::Game::updateTimer() {
@@ -86,14 +101,14 @@ void::Game::updateTimer() {
 }
 void::Game::updatePlayer()
 {
-    if(floor(timeSinceLastUpdate.asSeconds()) == 25)
+    if(floor(timeSinceLastUpdate.asSeconds()) == 15)
     {
         _player.looseLife();
     }
     _player.move(v_playerMove.x,v_playerMove.y);
     if(_player.getLives() == 0)
     {
-        _gameState = GameOver;
+        _gameState = Win;
     }
     for (int i = 0; i < _player.getLives(); ++i)
         {
@@ -140,13 +155,19 @@ void Game::update()
         _menu.display(_window);
     } else if (_gameState == GameOver){
         this -> drawText("Game Over");
-        std::this_thread::sleep_for (std::chrono::seconds(2));
+        this -> clearGame();
+        this -> _window.display();
+        std::this_thread::sleep_for (std::chrono::seconds(4));
+        this -> _window.clear(sf::Color::Black);
         _gameState = onMenu;
     }
     else if (_gameState == Win){
         this -> drawText("You Win");
-        std::this_thread::sleep_for (std::chrono::seconds(5));
-        level = + 1;
+        this -> _window.display();
+        this -> clearGame();
+        std::this_thread::sleep_for (std::chrono::seconds(4));
+        this -> _window.clear(sf::Color::Black);
+        level = level + 1;
         this -> initGame();
         _gameState = onGame;
     }
@@ -154,7 +175,7 @@ void Game::update()
 
 }
 
-void Game::HandleEvent(sf::Event event, bool isActive)
+void Game::HandleEvent(sf::Event& event, bool isActive)
 {
     int keyCode = event.key.code;
     if(_gameState == onGame)
@@ -222,6 +243,12 @@ void Game::loop()
 void Game::drawText(std::string text) {
 _full_text.setString(text);
 _window.draw(_full_text);
+}
+
+void Game::clearGame() {
+    _bullets.clear();
+    _player_lives.clear();
+    //delete &enemiesManager;
 }
 
 

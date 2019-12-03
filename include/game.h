@@ -48,8 +48,9 @@ private:
     void drawText(std::string text);
     void updateEnemies();
     void updateTimer();
+    void clearGame();
 
-	void HandleEvent(sf::Event event, bool isActive);
+	void HandleEvent(sf::Event& event, bool isActive);
 
 public:
     Game(void);
