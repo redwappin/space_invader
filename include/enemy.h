@@ -9,10 +9,15 @@ class Enemy : public Movable
 {
 protected:
 	void loadEntity() override;
-	void update();
+	int dir_x = 1;
+	int dir_y = 0;
+    bool changeDir = false;
 
 public:
-	Enemy(){};
-	explicit Enemy(sf::Texture* texture, sf::Vector2f startPos);
+    static sf::Texture texture;
+    void update() override ;
+    void collideOther() override;
+    void setChangeDir();
+	Enemy();
 	~Enemy();
 };

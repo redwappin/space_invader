@@ -6,15 +6,11 @@
 #define INVADERS_LIMITS_H
 
 
-class Limits {
-public:
-    int min_width = 0;
-    int max_width = 0;
-    int max_height = 0;
-    int min_height = 0;
-
-    Limits(){};
-};
-
+typedef struct {
+    float min_width = 0;
+    float max_width = 0;
+    float min_height = 0;
+    float max_height = 0;
+} Limits;
 
 #endif //INVADERS_LIMITS_H

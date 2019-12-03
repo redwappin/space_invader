@@ -10,24 +10,23 @@
 
 class BulletsManager {
 private:
+    std::map<std::string,std::vector<Movable*>> m_bullets;
     CollisionSystem* _collisionSystem;
-    std::vector<Bullet> _playerBullets;
-    std::vector<Bullet> _enemiesBullets;
-
-    //threads
-    static std::thread t_update;
-    static std::thread t_spawn;
 
     //Functions
-    void updatePlayerBullets();
-    void enemiesEnemiesBullets();
+    void updateWork();
+    void moveBullets(std::string entityName, std::vector<Movable*>* bullets );
 
 public:
-    BulletsManager(){};
+    BulletsManager();
+    static std::map<std::string,sf::Texture>textures;
     void Update();
-    void draw(sf::RenderWindow& window);
+    void EndUpdate();
+    void Draw(sf::RenderWindow& window);
+    void Spawn(std::string entityName, sf::Vector2f startPos);
+    std::vector<Movable*>* getBulletsByEntity(std::string name);
     ~BulletsManager();
-
+    void deleteEntity();
 };
 
 

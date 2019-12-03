@@ -3,8 +3,10 @@
 Entity::Entity() {
 }
 
-Entity::Entity(sf::Texture* texture) {
+
+void Entity::setTexture(sf::Texture *texture) {
     _bodyTexture = texture;
+    loadEntity();
 }
 
 void Entity::draw(sf::RenderWindow &_window) {
@@ -32,9 +34,17 @@ sf::FloatRect Entity::getBounds() {
     return _spriteBody.getGlobalBounds();
 }
 
+sf::Vector2f Entity::getOrigin() {
+    return _spriteBody.getOrigin();
+}
+
 Entity::~Entity()
 {
 }
+
+
+
+
 
 
 

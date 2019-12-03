@@ -8,35 +8,50 @@
 
 #include "enemy.h"
 #include "collisionSystem.h"
+#include "levelConfig.h"
 
 class EnemiesManager {
 private:
+
+
+//Struct to get EnemiesConfig
     //Main var
-    std::vector<Enemy> _enemies;
+    std::vector<Movable*> _enemies;
     CollisionSystem* _collisionSystem;
     Limits* _enemiesArea;
+    BulletsManager* _bulletsMngr;
 
-    //threads
-    static std::thread t_update;
-    static std::thread t_spawn;
+    //Internal Timer
+    sf::Clock _clock;
+    sf::Time _timeSinceLastShoot = sf::Time::Zero;
+    float _timeBetweenShoot = 10;
+
+    //iterator
+    std::vector<Movable*>::iterator enemy;
 
     //Spawn infos
-    int _enemyNb = 0;
-    int _expectedEnemyNb = 20;
+    int _rowNb = 0;
+    int _enemyNb = 20;
     int _enemyNbByRow =5 ;
 
+    //Difficulty Infos
+    int shootNb = 1;
+
     //Functions
-    void updateAll();
-    void enemiesShoot();
+    void spawn();
 
 public:
-    sf::Texture* enemyTexture;
+    EnemiesManager(){};
+    explicit EnemiesManager(LevelConfig::EnemiesConfig _config);
+    void setBulletsManager(BulletsManager *bulletsMngr);
+    void Update();
+    void EndUpdate();
+    void Shoot();
+    void Draw(sf::RenderWindow& window);
+    ~EnemiesManager();
 
-    EnemiesManager();
-    void update();
-    void spawn();
-    void draw(sf::RenderWindow& window);
-    ~EnemiesManager(){};
+    void deleteEntity();
+    int getEnemiesNb();
 };
 
 

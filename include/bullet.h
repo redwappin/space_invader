@@ -7,10 +7,14 @@
 class Bullet : public Movable
 {
 protected:
-	void loadEntity() override;
+    void loadEntity() override;
 
 public:
 	Bullet();
-	explicit Bullet(sf::Texture* texture);
+    void update() override;
+    void collideLimits() override;
+    void collideOther() override;
 	~Bullet();
+
+
 };

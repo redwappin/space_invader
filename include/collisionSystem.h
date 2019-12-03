@@ -8,44 +8,20 @@
 
 #include <thread>
 #include "movable.h"
-#include "bullet.h"
-#include "enemy.h"
-#include "player.h"
 
 class CollisionSystem {
 private:
-    static std::thread t_playerMove;
-    static std::thread t_player_bullet;
-    static std::thread t_enemy_bullet;
-    static std::thread t_bulletsMove;
-    static std::thread t_enemiesMove;
-
-    Player* _player;
-    std::vector<Enemy>* _enemies;
-    std::vector<Bullet>* _playerBullets;
-    std::vector<Bullet>* _enemyBullets;
-
-    Limits _windowSize;
-    Limits _enemyArea;
-
-    void checkCollision(std::vector<Movable>& v_objs, std::vector<Movable>& v_targets);
-    void checkCollision(Movable& obj, std::vector<Movable> &v_targets);
-    void checkCollision(std::vector<Movable>& v_objs, Limits& limits);
-    void checkCollision(Movable& obj, Limits& limits);
+    std::vector<Movable*>::iterator movable;
 
 public:
     CollisionSystem(){};
-    void CheckPlayerCol();
-    void CheckEnemiesCol();
-    void CheckBulletsCol();
-    void CheckEnemiesBulletsCol();
-    void CheckPlayerBulletsCol();
+    void checkCollision(std::vector<Movable*>& v_objs, std::vector<Movable*>& v_targets);
+    bool checkCollision(Movable* obj, std::vector<Movable*>& v_targets);
+    void checkLimitsCollision(std::vector<Movable*>& v_objs, Limits &limits, sf::Vector2i dir);
+    bool checkLimitsCollision(Movable* obj, Limits &limits, sf::Vector2i dir);
+    sf::Vector2i checkOneCollideLimits(std::vector<Movable*>& v_objs, Limits &limits);
+    ~CollisionSystem(){};
 
-    void SetEnemies(std::vector<Enemy>* enemies);
-    void SetPlayer(Player* player);
-    void SetPlayerBullets(std::vector<Bullet>* bullets);
-    void SetEnemyBullets(std::vector<Bullet>* bullets);
-    void SetLimits(Limits& window, Limits& enemyArea);
 };
 
 

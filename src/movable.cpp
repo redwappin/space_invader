@@ -3,9 +3,6 @@
 #include "bullet.h"
 
 
-Movable::Movable(sf::Texture* texture) :Entity(texture){
-
-}
 
 void Movable::move(float x, float y) {
     _spriteBody.move(x * _speed, y*_speed);
@@ -17,6 +14,10 @@ void Movable::setSpeed(float speed)
 
 }
 Movable::~Movable() {
+
+}
+
+void Movable::loadEntity() {
 
 }
 

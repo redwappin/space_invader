@@ -9,14 +9,17 @@
 class Movable : public Entity {
 protected:
     float _speed;
+    void loadEntity() override;
 
 
 public:
     Movable(){};
-    explicit Movable(sf::Texture* texture);
     ~Movable();
     void move (float x, float y);
     void setSpeed(float speed);
+    virtual void update(){};
+    virtual void collideLimits(){};
+    virtual void collideOther(){};
 };
 
 

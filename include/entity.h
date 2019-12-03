@@ -15,13 +15,13 @@ protected:
 
 public:
 	Entity();
-	explicit Entity(sf::Texture* texture);
-
+	void setTexture(sf::Texture* texture);
     void setPosition (float x, float y);
     void setOrigin (float x, float y);
     void setScale (float x, float y);
     sf::Vector2f getPosition();
     sf::FloatRect getBounds();
+    sf::Vector2f getOrigin();
 
     void draw(sf::RenderWindow& _window);
 
