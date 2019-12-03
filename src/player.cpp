@@ -107,7 +107,6 @@ void Player::setLives(int lives) {
             pos.x =_livesSprite[i-1].getPosition().x - _livesSprite[i-1].getBounds().width;
         }
         _livesSprite.back().setPosition(pos.x,pos.y);
-        std::cout << pos.x;
     }
 }
 
