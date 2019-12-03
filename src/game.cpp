@@ -64,12 +64,14 @@ void Game::initGame()
     };
 
     auto levelConf = _levelConfig.findByLevelNumber(level);
-    timeSinceLastUpdate = sf::Time::Zero;
 
     drawText("Niveau " + std::to_string(level));
     this -> _window.display();
     std::this_thread::sleep_for (std::chrono::seconds(2));
     this -> _window.clear();
+
+    timeSinceLastUpdate = sf::Time::Zero;
+    clock.restart();
 //    //Setup movable
 //    enemiesManager = EnemiesManager();
 //    enemiesManager.enemyTexture = &_textures[2];
@@ -195,13 +197,13 @@ void Game::HandleEvent(sf::Event& event, bool isActive)
         sf::Vector2i v_newMove (x_move,y_move);
         v_playerMove += v_newMove;
     }else if (_gameState == onMenu) {
-        if(event.type == sf::Event::MouseButtonPressed){
+        if (event.type == sf::Event::MouseButtonPressed) {
             sf::Vector2f Mouse = _window.mapPixelToCoords(sf::Mouse::getPosition(_window));
             if (_menu.getBoxes()[0].getGlobalBounds().contains(Mouse)) {
                 level = 1;
-                _gameState = onGame;
                 this->initGame();
-            }else if (_menu.getBoxes()[1].getGlobalBounds().contains(Mouse)) {
+                _gameState = onGame;
+            } else if (_menu.getBoxes()[1].getGlobalBounds().contains(Mouse)) {
                 this->_window.close();
             }
         }
