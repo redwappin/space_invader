@@ -13,7 +13,6 @@ Game::Game()
     _window.create(sf::VideoMode(windowsSize.max_width, windowsSize.max_height), "Simple invaders", sf::Style::Close | sf::Style::Titlebar);
     _window.setVerticalSyncEnabled(true);
     _window.setKeyRepeatEnabled(false);
-
     load();
 }
 
@@ -24,9 +23,12 @@ Game::~Game()
 void Game::load()
 {
 	this ->loadTextures();
-    _font.loadFromFile("assets/Sansation.ttf");
-    _full_text.setFont(_font);
-    _full_text.setCharacterSize(50);
+	this -> wideText();
+    _font.loadFromFile("assets/Mario-Kart-DS.ttf");
+    _gameState = onMenu;
+    _menu = Menu(&_font);
+    _player = Player(&_textures[0]);
+    _timer = Timer(&_font);
 
     enemiesArea.max_height = 800;
     enemiesArea.min_height = 300;
@@ -37,25 +39,74 @@ void Game::load()
     enemiesManager = EnemiesManager();
     enemiesManager.enemyTexture = &_textures[3];
     enemiesManager.spawn();
-    enemiesManager.draw(_window);
-	_player = Player(&_textures[0]);
-	_player.setSpeed(5);
+}
+
+void Game::wideText() {
+
+    _full_text.setFont(_font);
+    sf::FloatRect box = _full_text.getGlobalBounds();
+    _full_text.setOrigin((box.left + box.width) / 2,(box.top + box.height) / 2);
+    _full_text.setPosition(_window.getSize().y/2.0f, _window.getSize().y/2.0f);
+    _full_text.setScale(2, 2);
+}
+
+
+void Game::initGame()
+{
+    _player.setSpeed(5);
+    _player.setLife(3);
+    for (int i = 0; i < _player.getLives(); ++i)
+    {
+        _player_lives.emplace_back(&_textures[4]);
+        _player_lives.back().setPosition(  (_window.getSize().x -(_window.getSize().x/ 4))+i * 100, 0);
+    };
+    auto levelConf = _levelConfig.findByLevelNumber(level);
+    timeSinceLastUpdate = sf::Time::Zero;
+    std::cout << timeSinceLastUpdate.asSeconds();
+
+
 }
 
 void Game::loadTextures()
 {
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		_textures.emplace_back(sf::Texture());
 	}
 	_textures[0].loadFromFile("assets/luigi.png");
 	_textures[1].loadFromFile("assets/carapace.png");
     _textures[3].loadFromFile("assets/ghost.png");
+    _textures[4].loadFromFile("assets/pixel-heart.png");
 }
 
+void::Game::updateTimer() {
+    timeSinceLastUpdate += clock.restart();
+
+    _timer.display(_window, timeSinceLastUpdate);
+}
 void::Game::updatePlayer()
 {
+    if(floor(timeSinceLastUpdate.asSeconds()) == 25)
+    {
+        _player.looseLife();
+    }
     _player.move(v_playerMove.x,v_playerMove.y);
+    if(_player.getLives() == 0)
+    {
+        _gameState = GameOver;
+    }
+    for (int i = 0; i < _player.getLives(); ++i)
+        {
+            _player_lives[i].draw(_window);
+            if(_player_lives.size() > _player.getLives())
+            {
+                _player_lives.erase(_player_lives.begin()+i);
+            }
+            if(_player.getLives() == 0)
+            {
+                _gameState = GameOver;
+            }
+        };
     _player.draw(_window);
 }
 
@@ -79,29 +130,60 @@ void Game::updateEnemies() {
 
 void Game::update()
 {
-    enemiesManager.draw(_window);
-	this->updatePlayer();
-	this->updateBullets();
+    if(_gameState == onGame)
+    {
+        enemiesManager.draw(_window);
+        this->updatePlayer();
+        this->updateBullets();
+        this->updateTimer();
+    } else if ( _gameState == onMenu){
+        _menu.display(_window);
+    } else if (_gameState == GameOver){
+        this -> drawText("Game Over");
+        std::this_thread::sleep_for (std::chrono::seconds(2));
+        _gameState = onMenu;
+    }
+    else if (_gameState == Win){
+        this -> drawText("You Win");
+        std::this_thread::sleep_for (std::chrono::seconds(5));
+        level = + 1;
+        this -> initGame();
+        _gameState = onGame;
+    }
+
 
 }
 
 void Game::HandleEvent(sf::Event event, bool isActive)
 {
     int keyCode = event.key.code;
-    int x_move = 0;
-    if(isActive){
-        x_move = (keyCode == 71)? -1 : (keyCode == 72)? 1 : 0;
-    }else{
-        x_move = (keyCode == 71)? 1 : (keyCode == 72)? -1 :0;
-        if(keyCode == 57){
-            _bullets.emplace_back(&_textures[1]);
-			_player.shoot(_bullets.back());
+    if(_gameState == onGame)
+    {
+        int x_move = 0;
+        if(isActive){
+            x_move = (keyCode == 71)? -1 : (keyCode == 72)? 1 : 0;
+        }else{
+            x_move = (keyCode == 71)? 1 : (keyCode == 72)? -1 :0;
+            if(keyCode == 57){
+                _bullets.emplace_back(&_textures[1]);
+                _player.shoot(_bullets.back());
+            }
+        }
+
+        int y_move = 0.0f;
+        sf::Vector2i v_newMove (x_move,y_move);
+        v_playerMove += v_newMove;
+    }else if (_gameState == onMenu) {
+        if(event.type == sf::Event::MouseButtonPressed){
+            sf::Vector2f Mouse = _window.mapPixelToCoords(sf::Mouse::getPosition(_window));
+            if (_menu.getBoxes()[0].getGlobalBounds().contains(Mouse)) {
+                _gameState = onGame;
+                this->initGame();
+            }else if (_menu.getBoxes()[1].getGlobalBounds().contains(Mouse)) {
+                this->_window.close();
+            }
         }
     }
-
-    int y_move = 0.0f;
-    sf::Vector2i v_newMove (x_move,y_move);
-    v_playerMove += v_newMove;
 
 }
 
@@ -109,12 +191,11 @@ void Game::loop()
 {
     while (this->_window.isOpen())
     {
-		timeSinceLastUpdate += clock.restart();
         this->_window.clear(sf::Color::Black);
         sf::Event event;
         while (this->_window.pollEvent(event))
         {
-            switch (event.type)
+                switch (event.type)
             {
             case sf::Event::KeyPressed:
 				this->HandleEvent(event, true);
@@ -122,7 +203,10 @@ void Game::loop()
 
 			case sf::Event::KeyReleased:
 				this->HandleEvent(event, false);
-			break;
+			    break;
+			case sf::Event::MouseButtonPressed:
+			    this->HandleEvent(event, false);
+			    break;
             case sf::Event::Closed:
                 this->_window.close();
                 break;
@@ -134,6 +218,12 @@ void Game::loop()
         this->_window.display();
     }
 }
+
+void Game::drawText(std::string text) {
+_full_text.setString(text);
+_window.draw(_full_text);
+}
+
 
 
 
