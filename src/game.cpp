@@ -304,6 +304,7 @@ void Game::drawFullScreenText(std::string text) {
  */
 void Game::handleEndLevel() {
     std::this_thread::sleep_for(std::chrono::seconds(3));
+    this->_window.clear(sf::Color::Black);
     if(_gameState == Win && _currentLevel != _maxLevel) initLevel(_currentLevel+1);
     else{
         _gameState = onMenu;
