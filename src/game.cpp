@@ -108,7 +108,7 @@ void::Game::updatePlayer()
     _player.move(v_playerMove.x,v_playerMove.y);
     if(_player.getLives() == 0)
     {
-        _gameState = Win;
+        _gameState = GameOver;
     }
     for (int i = 0; i < _player.getLives(); ++i)
         {
