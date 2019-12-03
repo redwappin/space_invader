@@ -15,7 +15,9 @@ void Timer::display(sf::RenderWindow &_window, sf::Time &time) {
 
     int minutes =  floor(time.asSeconds()/60);
     int seconds = floor(time.asSeconds()-(minutes*60));
-    _time_text.setString( std::to_string(minutes) + " : " + std::to_string(seconds) );
+    std::string min = minutes< 10 ? "0"+std::to_string(minutes) : std::to_string(minutes);
+    std::string sec = seconds< 10 ? "0"+std::to_string(seconds) : std::to_string(seconds);
+    _time_text.setString( min + " : " + sec );
     _window.draw(_time_text);
 }
 
